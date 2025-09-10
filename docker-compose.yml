@@ -1,0 +1,28 @@
+version: '2'
+services:
+  target:
+    build: ./target
+    container_name: apache_target
+    hostname: target
+    environment:
+      - ROOT_PASSWORD=toor
+      - APACHE_INDEX_CONTENT=Hello from Apache!
+    networks:
+      - testnet
+  agent:
+    build: ./agent
+    container_name: apache_agent
+    depends_on:
+      - target
+    environment:
+      - SSH_USER=root
+      - SSH_PASS=toor
+      - SSH_HOST=target
+      - SSH_PORT=22
+      - LOG_CHECK_MINUTES=10
+    networks:
+      - testnet
+
+networks:
+  testnet:
+    driver: bridge
